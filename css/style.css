@@ -53,6 +53,7 @@ main{
     justify-content: center;
     align-items: center;
     padding: 50px;
+    flex-direction: column;
 }
 .board {
     width: 600px;
@@ -60,8 +61,12 @@ main{
     display: flex;
     flex-wrap: wrap;
     align-content: flex-start;
+    margin-bottom: 30px;
 }
-
+.game-status {
+    font-size: 25px;
+    font-weight: 500;
+}
 .cell{
     border: 1px solid black;
     background-color:#7fffd4;
@@ -84,6 +89,9 @@ main{
 .cell-7{
     width: calc(100% / 7);
     height: calc(100% / 7);
+}
+.active-bomb {
+    background-color: red;
 }
 /* FOOTER */
 footer {

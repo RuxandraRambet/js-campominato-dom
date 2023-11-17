@@ -2,7 +2,8 @@
 
 const board = document.querySelector('.board');
 const playButton = document.querySelector('.play-btn'); 
-let bombNumber = 16;
+const bombNumber = 16;
+
 
 // funzione che crea elemento
 function myCreateElement(tag, className, content){
@@ -43,7 +44,6 @@ function creatBoard (mainElement, cellNumber){
 
         myElement.addEventListener('click', function(){
             console.log(i); //stampo il numero della cella cliccata
-            myElement.classList.add('active-cell'); // cambio colore della cella cliccata
         });
         fragment.append(myElement);
     }
@@ -54,21 +54,55 @@ function resetFn(){
     board.innerHTML = "";
 }
 
-// Funzione genera numeri random
-function randomNumber(cellNumber) {
+
+// Funzione genera bombe
+function randomNumber(numLimit) {
     const bombArray = [];
 
     while (bombArray.length < bombNumber){
-        const random = Math.floor(Math.random() * cellNumber + 1);
+        const random = Math.floor(Math.random() * numLimit + 1);
 
         if(!bombArray.includes(random)){
-            bombArray.push(random);
+            bombArray.push(random);//aggiungo nr random all'array 
         }
-
     }
     return bombArray;
 
 }
+// Funzione logica del gioco
+function gameLogic(board, cellNumber){
+    const score = [];
+    let play = true;
+    const bombs = randomNumber(bombNumber, cellNumber);
+    const message = document.querySelector('.game-status');
+    board.addEventListener('click', function(event){
+        if(!event.target.classList.contains('cell')) return;
+        if(!play)return;
+
+        const currentElement = event.target;
+        const cellValue = Number(currentElement.innerHTML);
+
+        if(bombs.includes(cellValue)){
+            //Bomba calpestata
+            currentElement.classList.add('active-bomb'); // cambio colore della cella cliccata
+            message.innerHTML = `BOOM! Il tuo punteggio è ${score.length}`;
+            play = false;
+        }else{
+            currentElement.classList.add('active-cell'); // cambio colore della cella cliccata 
+
+            if(!score.includes(cellValue)){
+                score.push(cellValue);
+            }
+            message.innerHTML = `Sei stato fortunato! Il tuo punteggio è ${score.length}`;
+
+            if(score.length === cellNumber - bombs.length){
+                message.innerHTML = `Hai vinto! Il tuo punteggio è ${score.length}`;
+            }
+        }
+    });
+}
+
+
 // Funzione principale
 function campoMinato(){
     resetFn()
@@ -80,10 +114,12 @@ function campoMinato(){
     console.log(cellNumber);
 
     let bombArray = randomNumber(cellNumber);
-    console.log(bombArray);
+    // console.log(bombArray);
 
     creatBoard(board, cellNumber, bombArray);
+    gameLogic(board, cellNumber);
 }
+
 
 // Click al bottone compare la board
 playButton.addEventListener('click', campoMinato);
